@@ -37,6 +37,12 @@ task("create", "Create a Safe")
         if (!taskArgs.buildOnly)
             await factory.createProxyWithNonce(singleton.address, setupData, taskArgs.nonce).then((tx: any) => tx.wait())
         // TODO verify deployment
+
+        console.log()
+        await hre.run("record-safe", {address: predictedAddress})
+        // await hre.run("find-safes")
+        console.log()
+        await hre.run("info", {address: predictedAddress})
     });
 
 task("create-bulk", "Create multiple Safes from CSV")

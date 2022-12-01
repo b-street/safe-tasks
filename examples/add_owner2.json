@@ -1,0 +1,12 @@
+[
+    {
+        "to": "0x8fee2b2DAF149B2F88765fD99eac211641c7c64f",
+        "value": "0",
+        "method": "addOwnerWithThreshold(address,uint256)",
+        "params": [
+            "0x482472da24426AA56a38c97f4D8960965E3933eb",
+            "2"
+        ],
+        "operation": 0
+    }
+]

@@ -3,6 +3,9 @@ import "hardhat-deploy";
 import dotenv from "dotenv";
 import type { HardhatUserConfig, HttpNetworkUserConfig } from "hardhat/types";
 import yargs from "yargs";
+import "hardhat-faucet";
+import '@solidstate/hardhat-accounts'
+import "./tasks"
 
 const argv = yargs
   .option("network", {
@@ -35,11 +38,23 @@ if (["mainnet", "rinkeby", "kovan", "goerli"].includes(argv.network) && INFURA_K
 }
 
 import "./src/tasks"
+import {extendEnvironment} from "hardhat/config";
+import {printNetwork, printTaskInfo} from "./lib/money";
 
 const primarySolidityVersion = SOLIDITY_VERSION || "0.7.6"
 const soliditySettings = !!SOLIDITY_SETTINGS ? JSON.parse(SOLIDITY_SETTINGS) : undefined
 
+
+
 const userConfig: HardhatUserConfig = {
+  defaultNetwork: 'local',
+  // defaultNetwork: 'goerli',
+  namedAccounts: {
+    deployer: 0,  // <----- TODO: FIGURE THIS OUT?
+    redspy: 1,
+    consumer: 2,
+    hacker: 3,
+  },
   paths: {
     artifacts: "build/artifacts",
     cache: "build/cache",
@@ -53,7 +68,23 @@ const userConfig: HardhatUserConfig = {
     ]
   },
   networks: {
+    local: {
+      url: "http://localhost:8545",
+      accounts: sharedNetworkConfig.accounts,
+    },
     hardhat: {
+      forking: {
+        enabled: true,
+        url: "https://bsc-dataseed.binance.org",
+      },
+      accounts: {
+        mnemonic: MNEMONIC || DEFAULT_MNEMONIC
+      },
+      // accounts: sharedNetworkConfig.accounts,
+      // accounts: {
+      //   mnemonic: MNEMONIC,
+      //   count: 3
+      // },
       allowUnlimitedContractSize: true,
       blockGasLimit: 100000000,
       gas: 100000000
@@ -90,9 +121,6 @@ const userConfig: HardhatUserConfig = {
       ...sharedNetworkConfig,
       url: `https://bsc-dataseed.binance.org/`,
     },
-  },
-  namedAccounts: {
-    deployer: 0,
   },
   mocha: {
     timeout: 2000000,

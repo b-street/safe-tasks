@@ -15,3 +15,5 @@ coverage/
 coverage.json
 yarn-error.log
 templates/
+
+.idea/
